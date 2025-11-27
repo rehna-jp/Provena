@@ -1,4 +1,4 @@
-# 🛡️ TrustChain: AI-Verified Supply Chain Provenance
+# 🛡️ Provena: AI-Verified Supply Chain Provenance
 
 <div align="center">
 
@@ -39,7 +39,7 @@
 
 ## 🎯 Overview
 
-TrustChain combats the **$500+ billion global counterfeit goods market** by creating an immutable, AI-verified trail of product provenance. Every product gets a digital twin on the blockchain, verified by autonomous AI agents at each supply chain checkpoint.
+Provena combats the **$500+ billion global counterfeit goods market** by creating an immutable, AI-verified trail of product provenance. Every product gets a digital twin on the blockchain, verified by autonomous AI agents at each supply chain checkpoint.
 
 ### Quick Demo Flow
 
@@ -77,7 +77,7 @@ Consumer scans QR code → Views full verified journey → Makes confident purch
 
 ## ✨ Our Solution
 
-TrustChain creates a **decentralized trust layer** for global commerce by:
+Provena creates a **decentralized trust layer** for global commerce by:
 
 ### 🤖 AI-Powered Verification
 - Autonomous agents verify every checkpoint
@@ -276,7 +276,7 @@ cp .env.example .env
 npx hardhat compile
 
 # Deploy to Moonbase Alpha testnet
-npx hardhat run scripts/deploy.js --network moonbase
+npx hardhat run scripts/deploy.js --network neuroweb-testnet
 
 # Note the deployed contract address!
 ```
@@ -342,10 +342,10 @@ docker run -d --name dkg-node \
 cd contract
 
 # Deploy to Moonbase Alpha
-npx hardhat run scripts/deploy.js --network moonbase
+npx hardhat run scripts/deploy.js --network neuroweb-testnet
 
 # Verify on Moonscan (optional)
-npx hardhat verify --network moonbase DEPLOYED_CONTRACT_ADDRESS
+npx hardhat verify --network neuroweb-testnet DEPLOYED_CONTRACT_ADDRESS
 ```
 
 #### Deploy Frontend (Vercel)
@@ -644,13 +644,13 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
 ### Core Contributors
 
 - **[Your Name]** - Frontend & Smart Contracts - [@yourhandle](https://github.com/yourhandle)
-- **[Teammate 2]** - Backend & DKG Integration - [@handle2](https://github.com/handle2)
-- **[Teammate 3]** - AI/ML & Algorithms - [@handle3](https://github.com/handle3)
+- **[Teammate 2]** - Backend & DKG Integration /AI/ML & Algorithms- [@handle2](https://github.com/handle2)
+
 
 ### Advisors & Mentors
 
 - **OriginTrail Team** - DKG Integration Support
-- **Moonbeam Team** - Smart Contract Guidance
+- **NeuroWeb Team** - Smart Contract Guidance
 
 ---
 
@@ -663,7 +663,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 🙏 Acknowledgments
 
 - **OriginTrail** for the Decentralized Knowledge Graph
-- **Moonbeam** for the EVM-compatible parachain
+- **NeuroWeb** for the EVM-compatible parachain
 - **Polkadot** for the multi-chain infrastructure
 - **RainbowKit** for beautiful wallet integration
 - **Hackathon Organizers** for the opportunity
