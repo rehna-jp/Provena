@@ -2,9 +2,8 @@
 
 <div align="center">
 
-![TrustChain Banner](https://img.shields.io/badge/TrustChain-Blockchain%20%2B%20AI-blue?style=for-the-badge)
+![Provena Banner](https://img.shields.io/badge/TrustChain-Blockchain%20%2B%20AI-blue?style=for-the-badge)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
-[![Moonbeam](https://img.shields.io/badge/Moonbeam-Testnet-purple?style=for-the-badge)](https://moonbeam.network/)
 [![NeuroWeb](https://img.shields.io/badge/NeuroWeb-Parachain-orange?style=for-the-badge)](https://neuroweb.ai/)
 
 **A decentralized platform that verifies product authenticity throughout the supply chain using AI agents, blockchain technology, and the OriginTrail Decentralized Knowledge Graph.**

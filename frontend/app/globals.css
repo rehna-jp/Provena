@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- CSS variables --- */
+:root {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --border: 210 40% 80%;
+}
+
+/* --- Base styles --- */
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  min-height: 100vh;
+  font-family: system-ui, sans-serif;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.nav-link {
+  color: hsl(var(--foreground)); /* or #ffffff */
+  font-weight: 500;
+  transition: color 0.2s;
+  z-index: 10; /* ensures it renders above glass effects */
+}
+
+.nav-link:hover {
+  color: #38bdf8; /* visible hover */
+}
+
+/* --- Glass effects --- */
+.glass {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.25rem; /* rounded-lg */
+  padding: 1rem; /* example spacing */
+}
+
+.glass-dark {
+  background-color: rgba(15, 23, 42, 0.9); /* slate-900/50 */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(71, 85, 105, 0.5); /* slate-700/50 */
+  border-radius: 1rem; /* rounded-xl */
+  padding: 1.5rem; /* example spacing */
+}
+
+/* --- Buttons --- */
+.btn-primary {
+  background-color: #0369a1; /* blue-700 */
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #0284c7; /* blue-600 */
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: #374151; /* slate-700 */
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #4b5563; /* slate-600 */
+}
+
+/* --- Input fields --- */
+.input-field {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: #1f2937; /* slate-800 */
+  border: 1px solid #4b5563; /* slate-600 */
+  border-radius: 0.5rem;
+  outline: none;
+  transition: all 0.2s;
+  color: white;
+}
+
+.input-field:focus {
+  border-color: #0284c7; /* blue-500 */
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.5);
+}
+
+/* --- Cards --- */
+.card {
+  background-color: rgba(15, 23, 42, 0.5);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+}
+
+/* --- Optional utility classes for CSS variables --- */
+.bg-background {
+  background-color: hsl(var(--background));
+}
+
+.text-foreground {
+  color: hsl(var(--foreground));
+}
+
+.border-custom {
+  border: 1px solid hsl(var(--border));
+}
