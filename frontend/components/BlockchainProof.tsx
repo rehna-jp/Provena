@@ -34,15 +34,15 @@ export function BlockchainProof({
   const dkgExplorerUrl = `https://dkg-testnet.origintrail.io/explore?ual=${encodeURIComponent(ual)}`;
 
   return (
-    <div className="card">
-      <h2 className="text-xl font-bold mb-6 flex items-center">
+    <div className="card animate-fade-in space-y-6">
+      <h2 className="text-xl font-bold mb-4 flex items-center">
         <Database className="w-6 h-6 text-primary-500 mr-2" />
         Blockchain Proof
       </h2>
 
       <div className="space-y-4">
         {/* DKG UAL */}
-        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+        <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 hover:border-primary-500 transition-all">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
               <Link2 className="w-4 h-4 text-primary-400" />
@@ -56,7 +56,7 @@ export function BlockchainProof({
             )}
           </div>
           
-          <div className="flex items-center justify-between bg-slate-900/50 rounded p-3 font-mono text-sm">
+          <div className="flex items-center justify-between bg-slate-900/50 rounded-lg p-3 font-mono text-sm">
             <span className="text-slate-300 truncate flex-1">{ual}</span>
             <div className="flex items-center space-x-2 ml-4">
               <button
@@ -88,13 +88,13 @@ export function BlockchainProof({
         </div>
 
         {/* Knowledge Asset Hash */}
-        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+        <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 hover:border-primary-500 transition-all">
           <div className="flex items-center space-x-2 mb-2">
             <Database className="w-4 h-4 text-blue-400" />
             <span className="font-semibold">Knowledge Asset Hash</span>
           </div>
           
-          <div className="flex items-center justify-between bg-slate-900/50 rounded p-3 font-mono text-sm">
+          <div className="flex items-center justify-between bg-slate-900/50 rounded-lg p-3 font-mono text-sm">
             <span className="text-slate-300 truncate flex-1">{knowledgeAssetHash}</span>
             <button
               onClick={() => copyToClipboard(knowledgeAssetHash, 'hash')}
@@ -115,13 +115,13 @@ export function BlockchainProof({
         </div>
 
         {/* Product ID */}
-        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+        <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 hover:border-primary-500 transition-all">
           <div className="flex items-center space-x-2 mb-2">
             <Shield className="w-4 h-4 text-purple-400" />
             <span className="font-semibold">Product ID</span>
           </div>
           
-          <div className="flex items-center justify-between bg-slate-900/50 rounded p-3 font-mono text-sm">
+          <div className="flex items-center justify-between bg-slate-900/50 rounded-lg p-3 font-mono text-sm">
             <span className="text-slate-300">{productId}</span>
             <button
               onClick={() => copyToClipboard(productId, 'productId')}
@@ -142,7 +142,7 @@ export function BlockchainProof({
         </div>
 
         {/* DKG Timestamp */}
-        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+        <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 hover:border-primary-500 transition-all">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <p className="text-sm text-slate-400 mb-1">DKG Registration Time</p>
@@ -167,7 +167,7 @@ export function BlockchainProof({
       </div>
 
       {/* Info Box */}
-      <div className="mt-6 bg-primary-500/10 border border-primary-500/30 rounded-lg p-4">
+      <div className="mt-6 bg-primary-500/10 border border-primary-500/30 rounded-xl p-4">
         <h3 className="font-semibold text-primary-400 mb-2 flex items-center">
           <Shield className="w-4 h-4 mr-2" />
           What is Blockchain Proof?

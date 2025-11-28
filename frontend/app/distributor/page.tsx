@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi';
 import { parseEther } from 'viem';
-import { Truck, Loader2, CheckCircle, AlertCircle, Search } from 'lucide-react';
+import { Truck, Loader2, CheckCircle, AlertCircle, Search, Zap } from 'lucide-react';
 import { CONTRACTS, TRUST_STAKING_ABI, ERC20_ABI } from '@/lib/contracts';
 
 export default function DistributorDashboard() {
@@ -12,7 +12,6 @@ export default function DistributorDashboard() {
   const [stakeAmount, setStakeAmount] = useState('50');
   const [step, setStep] = useState<'form' | 'approving' | 'staking' | 'success'>('form');
 
-  // Read stakeholder info
   const { data: stakeholder } = useReadContract({
     address: CONTRACTS.TRUST_STAKING,
     abi: TRUST_STAKING_ABI,
@@ -20,30 +19,12 @@ export default function DistributorDashboard() {
     args: address ? [address] : undefined,
   });
 
-  // Register stakeholder
   const { writeContract: registerStakeholder, isPending: isRegistering } = useWriteContract();
+  const { writeContract: approveTokens, data: approveHash, isPending: isApproving } = useWriteContract();
+  const { isLoading: isApproveConfirming } = useWaitForTransactionReceipt({ hash: approveHash });
 
-  // Approve NEURO tokens
-  const { 
-    writeContract: approveTokens, 
-    data: approveHash,
-    isPending: isApproving 
-  } = useWriteContract();
-
-  const { isLoading: isApproveConfirming } = useWaitForTransactionReceipt({
-    hash: approveHash,
-  });
-
-  // Stake as distributor
-  const { 
-    writeContract: stakeProduct, 
-    data: stakeHash,
-    isPending: isStaking 
-  } = useWriteContract();
-
-  const { isLoading: isStakeConfirming, isSuccess: isStakeSuccess } = useWaitForTransactionReceipt({
-    hash: stakeHash,
-  });
+  const { writeContract: stakeProduct, data: stakeHash, isPending: isStaking } = useWriteContract();
+  const { isLoading: isStakeConfirming, isSuccess: isStakeSuccess } = useWaitForTransactionReceipt({ hash: stakeHash });
 
   const isRegistered = stakeholder?.[3];
 
@@ -53,7 +34,7 @@ export default function DistributorDashboard() {
         address: CONTRACTS.TRUST_STAKING,
         abi: TRUST_STAKING_ABI,
         functionName: 'registerStakeholder',
-        args: [1], // 1 = DISTRIBUTOR
+        args: [1],
       });
     } catch (error) {
       console.error('Registration error:', error);
@@ -62,16 +43,11 @@ export default function DistributorDashboard() {
 
   const handleStake = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!productId) {
-      alert('Please enter product ID');
-      return;
-    }
+    if (!productId) return alert('Please enter product ID');
 
     try {
       setStep('approving');
       const amountWei = parseEther(stakeAmount);
-      
       approveTokens({
         address: CONTRACTS.NEURO_TOKEN,
         abi: ERC20_ABI,
@@ -84,11 +60,9 @@ export default function DistributorDashboard() {
     }
   };
 
-  // Watch for approval and then stake
-  useState(() => {
+  useEffect(() => {
     if (approveHash && !isApproveConfirming && !isApproving && step === 'approving') {
       setStep('staking');
-      
       stakeProduct({
         address: CONTRACTS.TRUST_STAKING,
         abi: TRUST_STAKING_ABI,
@@ -96,34 +70,35 @@ export default function DistributorDashboard() {
         args: [productId, parseEther(stakeAmount)],
       });
     }
-  });
+  }, [approveHash, isApproveConfirming, isApproving, step, productId, stakeAmount]);
 
-  // Handle success
-  useState(() => {
-    if (isStakeSuccess && step === 'staking') {
-      setStep('success');
-    }
-  });
+  useEffect(() => {
+    if (isStakeSuccess && step === 'staking') setStep('success');
+  }, [isStakeSuccess, step]);
 
-  if (!isConnected) {
+  // 💎 Card wrapper for consistent glassmorphism style
+  const Card: React.FC<{children: React.ReactNode}> = ({ children }) => (
+    <div className="glass-dark p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all">{children}</div>
+  );
+
+  if (!isConnected)
     return (
       <div className="flex items-center justify-center min-h-[70vh]">
-        <div className="card text-center max-w-md">
-          <Truck className="w-16 h-16 text-primary-500 mx-auto mb-4" />
+        <Card>
+          <Truck className="w-16 h-16 text-cyan-400 mx-auto mb-4 animate-bounce" />
           <h2 className="text-2xl font-bold mb-2">Distributor Portal</h2>
           <p className="text-slate-400 mb-6">
             Connect your wallet to register checkpoints
           </p>
-        </div>
+        </Card>
       </div>
     );
-  }
 
-  if (!isRegistered) {
+  if (!isRegistered)
     return (
       <div className="flex items-center justify-center min-h-[70vh]">
-        <div className="card text-center max-w-md">
-          <AlertCircle className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+        <Card>
+          <AlertCircle className="w-16 h-16 text-yellow-400 mx-auto mb-4 animate-pulse" />
           <h2 className="text-2xl font-bold mb-2">Register as Distributor</h2>
           <p className="text-slate-400 mb-6">
             You need to register before adding checkpoints
@@ -138,27 +113,23 @@ export default function DistributorDashboard() {
                 <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
                 Registering...
               </>
-            ) : (
-              'Register Now'
-            )}
+            ) : 'Register Now'}
           </button>
-        </div>
+        </Card>
       </div>
     );
-  }
 
-  if (step === 'success') {
+  if (step === 'success')
     return (
       <div className="max-w-2xl mx-auto animate-fade-in">
-        <div className="card text-center">
-          <CheckCircle className="w-20 h-20 text-success-500 mx-auto mb-4" />
+        <Card>
+          <CheckCircle className="w-20 h-20 text-emerald-400 mx-auto mb-4 animate-bounce" />
           <h2 className="text-3xl font-bold mb-2">Checkpoint Added!</h2>
           <p className="text-slate-400 mb-8">
             Successfully staked {stakeAmount} NEURO for product: <span className="text-white font-mono">{productId}</span>
           </p>
-
           <div className="space-y-4">
-            <button 
+            <button
               onClick={() => {
                 setStep('form');
                 setProductId('');
@@ -167,26 +138,24 @@ export default function DistributorDashboard() {
             >
               Add Another Checkpoint
             </button>
-
-            <a 
+            <a
               href={`/verify/${productId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-primary-400 hover:text-primary-300 transition-colors"
+              className="block text-cyan-400 hover:text-cyan-300 transition-colors"
             >
               View Product Verification →
             </a>
           </div>
-        </div>
+        </Card>
       </div>
     );
-  }
 
   return (
-    <div className="max-w-2xl mx-auto animate-slide-up">
-      <div className="card">
+    <div className="max-w-2xl mx-auto animate-slide-up space-y-8">
+      <Card>
         <div className="flex items-center space-x-3 mb-6">
-          <Truck className="w-8 h-8 text-primary-500" />
+          <Truck className="w-8 h-8 text-cyan-400" />
           <h1 className="text-3xl font-bold">Add Checkpoint</h1>
         </div>
 
@@ -209,9 +178,7 @@ export default function DistributorDashboard() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Stake Amount (NEURO)
-            </label>
+            <label className="block text-sm font-medium mb-2">Stake Amount (NEURO)</label>
             <input
               type="number"
               value={stakeAmount}
@@ -223,16 +190,10 @@ export default function DistributorDashboard() {
               disabled={step !== 'form'}
               required
             />
-            <p className="text-sm text-slate-400 mt-1">
-              Minimum: 50 NEURO. You'll get 10% bonus if trust score ≥ 90
-            </p>
+            <p className="text-sm text-slate-400 mt-1">Minimum: 50 NEURO. Earn 10% bonus if trust score ≥ 90</p>
           </div>
 
-          <button
-            type="submit"
-            disabled={step !== 'form'}
-            className="btn-primary w-full"
-          >
+          <button type="submit" disabled={step !== 'form'} className="btn-primary w-full">
             {step === 'form' && 'Add Checkpoint & Stake'}
             {step === 'approving' && (
               <>
@@ -248,18 +209,18 @@ export default function DistributorDashboard() {
             )}
           </button>
         </form>
+      </Card>
 
-        <div className="mt-8 pt-6 border-t border-slate-700">
-          <h3 className="font-semibold mb-2">💡 Distributor Guidelines:</h3>
-          <ol className="text-sm text-slate-400 space-y-1 list-decimal list-inside">
-            <li>Scan or enter the product ID when it arrives at your facility</li>
-            <li>Stake NEURO tokens to verify you're handling the product</li>
-            <li>AI agents will verify your checkpoint automatically</li>
-            <li>Earn 10% bonus if the product maintains high trust score</li>
-            <li>Build reputation for future transactions</li>
-          </ol>
-        </div>
-      </div>
+      <Card>
+        <h3 className="font-semibold mb-2">💡 Distributor Guidelines:</h3>
+        <ol className="text-sm text-slate-400 space-y-1 list-decimal list-inside">
+          <li>Scan or enter the product ID when it arrives at your facility</li>
+          <li>Stake NEURO tokens to verify you're handling the product</li>
+          <li>AI agents will verify your checkpoint automatically</li>
+          <li>Earn 10% bonus if the product maintains high trust score</li>
+          <li>Build reputation for future transactions</li>
+        </ol>
+      </Card>
     </div>
   );
 }
