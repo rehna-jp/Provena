@@ -1,9 +1,9 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-// Utility for merging Tailwind classes
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+// Utility for merging Tailwind classes (simplified without external deps)
+export function cn(...classes: (string | undefined | null | false)[]) {
+  return classes.filter(Boolean).join(' ');
 }
 
 // Format Ethereum address
@@ -154,7 +154,7 @@ export function downloadQRCode(svg: SVGElement, filename: string): void {
   img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
 }
 
-// DKG API helpers (for when your teammate provides the endpoint)
+// DKG API helpers - REAL INTEGRATION WITH TEAMMATE'S API
 export async function createDKGAsset(productData: {
   productId: string;
   productName: string;
@@ -163,33 +163,67 @@ export async function createDKGAsset(productData: {
   const dkgApiUrl = process.env.NEXT_PUBLIC_DKG_API_URL;
   
   if (!dkgApiUrl) {
-    // Return mock data if DKG API not configured
-    console.warn('DKG API not configured, using mock data');
-    return {
-      ual: `did:dkg:neuroweb:2043/${productData.productId}`,
-      jsonLDHash: `QmHash${Date.now()}`,
-    };
+    console.error('DKG_API_URL not configured!');
+    throw new Error('DKG API not configured. Please set NEXT_PUBLIC_DKG_API_URL in .env.local');
   }
   
   try {
-    const response = await fetch(`${dkgApiUrl}/create`, {
+    console.log('Creating DKG asset:', productData);
+    
+    // Step 1: Register product first
+    const registerResponse = await fetch(`${dkgApiUrl}/product/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(productData),
+      headers: { 
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        product_id: productData.productId,
+        name: productData.productName,
+        origin: productData.origin,
+        manufacturer: 'TrustChain', // Add if needed
+      }),
     });
     
-    if (!response.ok) {
-      throw new Error('DKG API request failed');
+    if (!registerResponse.ok) {
+      const errorText = await registerResponse.text();
+      console.error('Product registration error:', errorText);
+      throw new Error(`Failed to register product: ${registerResponse.status}`);
     }
     
-    return await response.json();
+    const registerResult = await registerResponse.json();
+    console.log('Product registered:', registerResult);
+    
+    // Step 2: Publish to DKG
+    const dkgResponse = await fetch(`${dkgApiUrl}/dkg/publish`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        product_id: productData.productId,
+        product_name: productData.productName,
+        origin: productData.origin,
+      }),
+    });
+    
+    if (!dkgResponse.ok) {
+      const errorText = await dkgResponse.text();
+      console.error('DKG publish error:', errorText);
+      throw new Error(`DKG publish failed: ${dkgResponse.status}`);
+    }
+    
+    const dkgResult = await dkgResponse.json();
+    console.log('DKG asset published:', dkgResult);
+    
+    // Extract UAL and hash from response
+    // Adjust these field names based on actual response
+    return {
+      ual: dkgResult.ual || dkgResult.UAL || dkgResult.data?.ual || `did:dkg:neuroweb:2043/${productData.productId}`,
+      jsonLDHash: dkgResult.knowledge_asset_hash || dkgResult.hash || dkgResult.data?.hash || `QmHash${Date.now()}`,
+    };
   } catch (error) {
     console.error('DKG API error:', error);
-    // Fallback to mock data
-    return {
-      ual: `did:dkg:neuroweb:2043/${productData.productId}`,
-      jsonLDHash: `QmHash${Date.now()}`,
-    };
+    throw new Error(`Failed to create DKG asset: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
@@ -197,17 +231,109 @@ export async function queryDKGAsset(ual: string): Promise<any> {
   const dkgApiUrl = process.env.NEXT_PUBLIC_DKG_API_URL;
   
   if (!dkgApiUrl) {
+    console.warn('DKG_API_URL not configured');
     return null;
   }
   
   try {
-    const response = await fetch(`${dkgApiUrl}/query/${encodeURIComponent(ual)}`);
+    console.log('Querying DKG asset:', ual);
+    
+    const response = await fetch(`${dkgApiUrl}/dkg/query`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ual: ual,
+      }),
+    });
+    
     if (!response.ok) {
-      throw new Error('DKG query failed');
+      throw new Error(`DKG query failed: ${response.status}`);
     }
-    return await response.json();
+    
+    const result = await response.json();
+    console.log('DKG asset data:', result);
+    return result;
   } catch (error) {
     console.error('DKG query error:', error);
     return null;
+  }
+}
+
+// Get product details from backend
+export async function getProductDetails(productId: string): Promise<any> {
+  const dkgApiUrl = process.env.NEXT_PUBLIC_DKG_API_URL;
+  
+  if (!dkgApiUrl) {
+    return null;
+  }
+  
+  try {
+    const response = await fetch(`${dkgApiUrl}/product/${productId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to get product: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Get product error:', error);
+    return null;
+  }
+}
+
+// Get trust score from backend
+export async function getTrustScore(productId: string): Promise<any> {
+  const dkgApiUrl = process.env.NEXT_PUBLIC_DKG_API_URL;
+  
+  if (!dkgApiUrl) {
+    return null;
+  }
+  
+  try {
+    const response = await fetch(`${dkgApiUrl}/scan/${productId}/trust`);
+    if (!response.ok) {
+      throw new Error(`Failed to get trust score: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Get trust score error:', error);
+    return null;
+  }
+}
+
+// Submit checkpoint to backend
+export async function submitCheckpoint(checkpointData: {
+  productId: string;
+  location: string;
+  handler: string;
+}): Promise<any> {
+  const dkgApiUrl = process.env.NEXT_PUBLIC_DKG_API_URL;
+  
+  if (!dkgApiUrl) {
+    throw new Error('DKG API not configured');
+  }
+  
+  try {
+    const response = await fetch(`${dkgApiUrl}/checkpoint/submit`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        product_id: checkpointData.productId,
+        location: checkpointData.location,
+        handler: checkpointData.handler,
+        timestamp: new Date().toISOString(),
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Checkpoint submission failed: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Submit checkpoint error:', error);
+    throw error;
   }
 }

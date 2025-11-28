@@ -146,7 +146,7 @@ export default function ManufacturerDashboard() {
       <div className="flex items-center justify-center min-h-[70vh]">
         <div className="card text-center max-w-md">
           <Package className="w-16 h-16 text-primary-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Welcome to TrustChain</h2>
+          <h2 className="text-2xl font-bold mb-2">Welcome to Provena</h2>
           <p className="text-slate-400 mb-6">
             Connect your wallet to start creating verified products
           </p>
