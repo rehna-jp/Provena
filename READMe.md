@@ -147,7 +147,52 @@ Provena creates a **decentralized trust layer** for global commerce by:
 │  └──────────────────────────────────────────┘  │
 │       Connected via Polkadot XCM                │
 └─────────────────────────────────────────────────┘
+
+### 🤖 Agent Layer
+Our AI agents autonomously verify supply chain checkpoints:
+- **Anomaly Detection**: Detect impossible transit times, location spoofing
+- **Fraud Detection**: Pattern recognition for suspicious activities
+- **Trust Score Calculation**: AI-computed 0-100 score
+- **Implementation**: AIScoreOracle.sol with EIP-712 signatures
+
+### 🧠 Knowledge Layer (OriginTrail DKG)
+Decentralized knowledge storage on NeuroWeb:
+- **DKG Edge Node**: Stores product knowledge assets
+- **UAL (Universal Asset Locator)**: `did:dkg:neuroweb:2043/{product_id}`
+- **JSON-LD Format**: Structured supply chain data
+- **Verification**: Immutable knowledge graph
+
+### 🔗 Trust Layer (NeuroWeb Blockchain)
+Economic incentives and blockchain security:
+- **Token Staking**: Manufacturers stake NEURO tokens
+- **Reputation System**: Build trust over time
+- **Rewards**: 20% bonus for high trust scores
+- **Slashing**: Penalties for fraud
+
+## 📊 DKG Integration
+
+### Creating Knowledge Assets
+```javascript
+// Frontend calls DKG API
+const { ual, jsonLDHash } = await createDKGAsset({
+  productId: "PROD-001",
+  productName: "Coffee Beans",
+  origin: "Ethiopia"
+});
+
+// Store on blockchain
+await trustStaking.manufacturerStake(
+  productId, amount, ual, jsonLDHash
+);
 ```
+
+### Querying Knowledge Assets
+```javascript
+const data = await queryDKGAsset(ual);
+// Returns complete product provenance
+```
+
+
 
 ### Data Flow
 
@@ -212,7 +257,7 @@ sequenceDiagram
 
 ### Blockchain & Web3
 - **Smart Contracts**: Solidity ^0.8.20
-- **Primary Chain**: Moonbeam Parachain (Moonbase Alpha Testnet)
+- **Primary Chain**: NeuroWeb Testnet
 - **Knowledge Graph**: OriginTrail DKG (NeuroWeb Parachain)
 - **Wallet Integration**: RainbowKit
 - **Web3 Library**: Wagmi + Viem
@@ -246,7 +291,6 @@ Before you begin, ensure you have:
 - **Node.js** v18+ and npm
 - **MetaMask** or compatible Web3 wallet
 - **Git**
-- **Moonbase Alpha DEV tokens** ([Faucet](https://faucet.moonbeam.network/))
 - **NeuroWeb testnet tokens** ([Faucet](https://neuroweb.ai/faucet))
 - **DKG Edge Node** ([Installation Guide](https://docs.origintrail.io))
 
@@ -255,7 +299,7 @@ Before you begin, ensure you have:
 #### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/trustchain.git
+git clone https://github.com/rehna-jp/Provena.git
 cd trustchain
 ```
 
@@ -434,7 +478,7 @@ railway up
 
 ### TrustStaking.sol
 
-**Deployed on Moonbase Alpha**: `0x...` (add after deployment)
+**Deployed on NeuroWeb Testnet**: `0x...` (add after deployment)
 
 #### Main Functions
 
@@ -558,7 +602,7 @@ trustchain/
 
 ## 🗺️ Roadmap
 
-### ✅ Phase 1: MVP (Hackathon - 3 Days)
+### ✅ Phase 1: MVP 
 - [x] Smart contract deployment
 - [x] Product creation and staking
 - [x] Basic checkpoint scanning
@@ -566,28 +610,28 @@ trustchain/
 - [x] QR code generation
 - [x] Trust score calculation
 
-### 🚧 Phase 2: AI Enhancement (Week 1-2)
+### 🚧 Phase 2: AI Enhancement 
 - [ ] Advanced anomaly detection algorithms
 - [ ] Image authenticity verification
 - [ ] Pattern recognition for fraud
 - [ ] Predictive analytics
 - [ ] Machine learning model training
 
-### 📅 Phase 3: Multi-Chain Expansion (Week 3-4)
+### 📅 Phase 3: Multi-Chain Expansion 
 - [ ] Full NeuroWeb integration
 - [ ] Acala payment integration
 - [ ] Cross-chain messaging (XCM)
 - [ ] x402 micropayment protocol
 - [ ] Multi-chain data aggregation
 
-### 🎯 Phase 4: Production Ready (Month 2-3)
+### 🎯 Phase 4: Production Ready 
 - [ ] Mobile apps (iOS/Android)
 - [ ] IoT sensor integration
 - [ ] Enterprise dashboard
 - [ ] API for third-party integrations
 - [ ] Mainnet deployment
 
-### 🌟 Phase 5: Scale (Month 3+)
+### 🌟 Phase 5: Scale 
 - [ ] 10,000+ products tracked
 - [ ] Partner with major brands
 - [ ] Global logistics integration
@@ -642,8 +686,9 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
 
 ### Core Contributors
 
-- **[Your Name]** - Frontend & Smart Contracts - [@yourhandle](https://github.com/yourhandle)
-- **[Teammate 2]** - Backend & DKG Integration /AI/ML & Algorithms- [@handle2](https://github.com/handle2)
+- **[Precious Jeremy]** - Frontend & Smart Contracts - [@rehna-jp](https://github.com/rehna-jp)
+- **[Hannah Delali]** - Backend & DKG Integration /AI/ML & Algorithms- [@RockZ37](https://github.com/RockZ37)
+- **[Winnifred Amuzu]** - Project Manager
 
 
 ### Advisors & Mentors
@@ -652,6 +697,19 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
 - **NeuroWeb Team** - Smart Contract Guidance
 
 ---
+
+
+## 🚀 Future Enhancements
+
+### MCP Integration (Planned)
+- AI agents communicate via Model Context Protocol
+- Decentralized agent coordination
+- Agent-to-agent verification
+
+### x402 Micropayments (Planned)
+- Pay AI agents per verification
+- Automated micropayment settlements
+- Incentivize quality verifications
 
 ## 📄 License
 
@@ -673,14 +731,14 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ### Get Help
 
-- **Documentation**: [docs.trustchain.io](https://docs.trustchain.io)
-- **Discord**: [Join our server](https://discord.gg/trustchain)
-- **Email**: support@trustchain.io
-- **Twitter**: [@TrustChainApp](https://twitter.com/trustchainapp)
+- **Documentation**: [docs.provena.io](https://docs.provena.io)
+- **Discord**: [Join our server](https://discord.gg/provena)
+- **Email**: support@provena.io
+- **Twitter**: [@ProvenaApp](https://twitter.com/provenaapp)
 
 ### Report Issues
 
-Found a bug? [Open an issue](https://github.com/yourusername/trustchain/issues)
+Found a bug? [Open an issue](https://github.com/rehna-jp/provena/issues)
 
 ### Security
 
@@ -694,6 +752,6 @@ Found a security vulnerability? Email security@trustchain.io
 
 **Built with ❤️ for the future of trusted commerce**
 
-[⬆ Back to Top](#️-trustchain-ai-verified-supply-chain-provenance)
+[⬆ Back to Top](#️-provena-ai-verified-supply-chain-provenance)
 
 </div>

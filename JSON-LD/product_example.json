@@ -1,0 +1,48 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "dkg": "https://dkg.origintrail.io/",
+    "trustchain": "https://trustchain.io/"
+  },
+  "@type": "Product",
+  "@id": "did:dkg:neuroweb:2043/PROD-2024-001",
+  "productID": "PROD-2024-001",
+  "name": "Organic Coffee Beans",
+  "brand": {
+    "@type": "Brand",
+    "name": "Ethiopian Premium"
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "Coffee Growers Co-op",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "ET",
+      "addressLocality": "Sidamo"
+    }
+  },
+  "trustchain:supplyChain": [
+    {
+      "@type": "trustchain:Checkpoint",
+      "location": "Origin Factory",
+      "timestamp": "2024-01-15T10:00:00Z",
+      "handler": "0x1234...5678",
+      "verified": true,
+      "trustScore": 95
+    },
+    {
+      "@type": "trustchain:Checkpoint",
+      "location": "Distribution Center",
+      "timestamp": "2024-01-20T14:30:00Z",
+      "handler": "0xabcd...efgh",
+      "verified": true,
+      "trustScore": 93
+    }
+  ],
+  "trustchain:verification": {
+    "aiVerified": true,
+    "blockchainVerified": true,
+    "dkgVerified": true,
+    "finalTrustScore": 94
+  }
+}
